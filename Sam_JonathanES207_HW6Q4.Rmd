@@ -22,6 +22,21 @@ length(loc$Address) - sum(str_detect(loc$Address, "\\d") & str_detect(loc$`Zip C
 ```
 
 ###Question 14
+######Other needed objects
+```{r}
+library(stringr)
+setwd('~/Desktop/ca_ozone')
+str_o3.filelist <- lapply(o3.filenames, read_delim, delim = "|")
+names(str_o3.filelist) <- str_sub(str_subset(o3.filenames, ".txt$"), start = 1, end = str_length(o3.filenames)-4)
+names(o3.filelist) == names(str_o3.filelist)
+library(data.table)
+daily <- o3.filelist %>%
+  rbindlist() %>%
+  group_by(site = as.factor(site), date) %>%
+  summarize(o3 = mean(obs, na.rm = TRUE))
+```
+
+
 ```{r}
 colnames(loc)[1] <- "site"
 daily.site <- daily %>%
